@@ -1,7 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from app import app
-
-db = SQLAlchemy(app)
+from . import db
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -12,6 +9,16 @@ class User(db.Model):
     email = db.Column(db.String)
     role = db.Column(db.String)
     phone = db.Column(db.String)
+
+    def to_dict(self):
+        return {"id": self.id,
+         "first_name": self.first_name,
+         "last_name": self.last_name,
+         "age": self.age,
+         "email": self.email,
+         "role": self.role,
+         "phone": self.phone,
+        }
 
 
 class Offer(db.Model):
