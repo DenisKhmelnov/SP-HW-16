@@ -19,5 +19,4 @@ def create_app():
         migrate.load_orders('data/orders.json')
         migrate.load_offers('data/offers.json')
 
-
     return app

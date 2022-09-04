@@ -2,6 +2,7 @@ import json
 from . import models, db
 from flask import current_app as app, request, jsonify, redirect
 
+
 @app.route("/users", methods=["GET", "POST"])
 def users():
     if request.method == "GET":
@@ -20,12 +21,11 @@ def users():
         for user in models.User.query.all():
             result.append(user.to_dict())
 
-        return jsonify(**result), 200
+        return jsonify(result), 200
 
 
 @app.route("/users/<int:uid>", methods=["GET", "PUT", "DELETE"])
 def user(uid):
-
     with db.session.begin():
         user = models.User.query.get(uid)
 
@@ -67,7 +67,7 @@ def orders():
         for order in models.Order.query.all():
             result.append(order.to_dict())
 
-        return jsonify(**result), 200
+        return jsonify(result), 200
 
 
 @app.route("/orders/<int:oid>", methods=["GET", "PUT", "DELETE"])
@@ -93,6 +93,42 @@ def order(oid):
             db.session.delete(order)
             return redirect("/orders", code=302)
 
-@app.route("/offers")
+
+@app.route("/offers", methods=["GET", "POST"])
 def offers():
-    pass
+    if request.method == "GET":
+        result = []
+        for offer in models.Offer.query.all():
+            result.append(offer.to_dict())
+        return jsonify(result)
+    elif request.method == "POST":
+        offer_data = request.json
+        new_offer = models.Offer(**offer_data)
+
+        db.session.add(new_offer)
+        db.session.commit()
+
+        result = []
+        for offer in models.Offer.query.all():
+            result.append(offer.to_dict())
+
+        return jsonify(result), 200
+
+
+@app.route("/offers/<int:oid>", methods=["GET", "PUT", "DELETE"])
+def offer(oid):
+    with db.session.begin():
+        offer = models.Offer.query.get(oid)
+        if request.method == "GET":
+            return jsonify(offer.to_dict())
+        elif request.method == "PUT":
+            offer_data = request.json
+            offer.order_id = offer_data["order_id"]
+            offer.executor_id = offer_data["executor_id"]
+
+            db.session.add(offer)
+            return redirect(f"/offers/{oid}")
+
+        elif request.method == "DELETE":
+            db.session.delete(offer)
+            return redirect("/offers", code=302)

@@ -33,7 +33,7 @@ class Offer(db.Model):
         return {
             "id": self.id,
             "order_id": self.order_id,
-            "executor_id": self.executor,
+            "executor_id": self.executor_id,
         }
 
 
