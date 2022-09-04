@@ -16,5 +16,8 @@ def create_app():
 
         from . import migrate
         migrate.load_users('data/users.json')
+        migrate.load_orders('data/orders.json')
+        migrate.load_offers('data/offers.json')
+
 
     return app
